@@ -1,5 +1,5 @@
 <template>
-    {{ authStore.isAuthenticated ? '已登入' : '未登入' }}
+    <!-- {{ authStore.isAuthenticated ? '已登入' : '未登入' }} -->
     <!-- v-if="authStore.isAuthenticated " -->
     <Header  v-if="authStore.isAuthenticated " />
      <!-- 側邊選單 -->

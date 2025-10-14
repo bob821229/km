@@ -1,8 +1,9 @@
 <template>
     <div>
+          <h1 style="text-align: center">編輯模式</h1>
         <el-row :gutter="5">
             <draggable
-                :list="data"
+                :list="departmentListStore.departmentList"
                 group="kanban"
                 item-key="idx"
                 style="width: 100%; display: flex; flex-wrap: wrap"
@@ -19,7 +20,7 @@
                             style="height: 100%; margin: 10px"
                             @click="editDepartment(element, index)"
                         >
-                            <DepartmentCard :data="element" />
+                            <DepartmentCard :disabled="true" :data="element" />
                         </el-card>
                     </el-col>
                 </template>
@@ -119,6 +120,7 @@
             >
         </div>
         <!-- currentEditIndex:{{ currentEditIndex }} -->
+         <!-- {{ departmentListStore.departmentList }} -->
     </div>
 </template>
 
@@ -128,6 +130,8 @@ import ManagerCard from "@/components/ManagerCard.vue";
 import DepartmentCard from "@/components/DepartmentCard.vue";
 import { useRouter } from "vue-router";
 import draggable from "vuedraggable";
+import {useDepartmentListStore} from "@/stores/departmentList";
+const departmentListStore = useDepartmentListStore();
 import {
     Delete,
     Edit,
@@ -138,6 +142,7 @@ import {
     Plus,
 } from "@element-plus/icons-vue";
 const router = useRouter();
+
 let data = ref([
     {
         idx: 1,
@@ -262,6 +267,7 @@ let data = ref([
         ],
     },
 ]);
+
 const routerPush = (data) => {
     const { manager, title } = data;
     if (!manager) {
@@ -272,33 +278,19 @@ const routerPush = (data) => {
         name: "SupervisorProfile",
         params: { manager, title },
     });
-    //   router.push({
-    //   name: 'SupervisorProfile',
-    //   state: { manager, title }
-    // })
 };
 
 // 編輯功能
 const isDialogVisible = ref(false);
 const editForm = ref({});
 const currentEditIndex = ref(null);
-const addDepartment = () => {
-    editForm.value = {
-        idx: data.value.length + 1,
-        name: null,
-        title: null,
-        manager: null,
-        managerTitle: null,
-        core: [],
-    };
-    currentEditIndex.value = null;
-    isDialogVisible.value = true;
-};
+//開啟編輯對話框
 const editDepartment = (department, index) => {
     editForm.value = JSON.parse(JSON.stringify(department)); // 深拷貝
     currentEditIndex.value = index;
     isDialogVisible.value = true;
 };
+//刪除功能
 const deleteDepartment = () => {
     ElMessageBox.confirm("確定要移除該所處?", "警告", {
         confirmButtonText: "確定",
@@ -307,7 +299,8 @@ const deleteDepartment = () => {
     })
         .then(() => {
             if (currentEditIndex.value != null) {
-                data.value.splice(currentEditIndex.value, 1);
+                departmentListStore.deleteDepartment(currentEditIndex.value);
+                // data.value.splice(currentEditIndex.value, 1);
                 isDialogVisible.value = false;
             } else {
                 alert("無法刪除，請先選擇要刪除的部門");
@@ -332,14 +325,17 @@ const addCore = () => {
 const removeCore = (index) => {
     editForm.value.core.splice(index, 1); // 刪除指定索引的核心內容
 };
+
 const saveEdit = () => {
     if (currentEditIndex.value == null) {
         // 新增部門
-        data.value.push(JSON.parse(JSON.stringify(editForm.value)));
+        // data.value.push(JSON.parse(JSON.stringify(editForm.value)));
+        departmentListStore.addDepartment(editForm.value);
     } else {
         // 編輯現有部門
-        const updatedDepartment = JSON.parse(JSON.stringify(editForm.value));
-        data.value[currentEditIndex.value] = updatedDepartment;
+        // const updatedDepartment = JSON.parse(JSON.stringify(editForm.value));
+        // data.value[currentEditIndex.value] = updatedDepartment;
+        departmentListStore.editDepartment(currentEditIndex.value,editForm.value)
     }
     isDialogVisible.value = false;
 };

@@ -1,7 +1,7 @@
 <template>
     <main>
         <!-- <h1 class="main-title">台灣水資源與農業研究院</h1> -->
-        <div class="logo_wrap" @click="showSearch = !showSearch">
+        <div class="logo_wrap">
             <img src="@/assets/images/logo.jpg" alt="" />
         </div>
         <div class="search-row" v-show="showSearch">
@@ -35,7 +35,7 @@
             <div class="kanban-board">
                 <div
                     class="kanban-list"
-                    v-for="(list, index) in quickLinks"
+                    v-for="(list, index) in quickLinksStore.quickLinks"
                     :key="index"
                 >
                     <el-card class="kanban-column h-100" :header="list.category">
@@ -111,6 +111,8 @@ import CategoryCard from "@/components/CategoryCard.vue";
 import Footer from "@/components/Footer.vue";
 import draggable from "vuedraggable";
 import { v4 as uuidv4 } from "uuid";
+import {useQuickLinksStore} from "@/stores/quickLinks";
+const quickLinksStore = useQuickLinksStore();
 const edit = ref(false);
 // 防抖處理卡片位置更新
 const syncCardPosition = (payload) => {
@@ -500,10 +502,10 @@ const quickLinks = ref([
 ]);
 //新增：根據搜尋字串過濾 quickLinks
 const filteredLinks = computed(() => {
-    if (!input1.value.trim()) return quickLinks.value;
+    if (!input1.value.trim()) return quickLinksStore.quickLinks;
     const keyword = input1.value.trim().toLowerCase();
     // 只顯示有符合關鍵字的分類與子連結
-    return quickLinks.value
+    return quickLinksStore.quickLinks
         .map((link) => {
             // 檢查分類名稱或子連結文字是否有符合
             const matchedItems = link.items.filter((item) =>

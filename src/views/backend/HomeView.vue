@@ -5,7 +5,7 @@
             <div class="kanban-board">
                 <div
                     class="kanban-list"
-                    v-for="(list, index) in quickLinks"
+                    v-for="(list, index) in quickLinksStore.quickLinks"
                     :key="index"
                 >
                     <el-card
@@ -20,8 +20,12 @@
                             @end="(evt) => onDragEnd(evt, list.id)"
                             :disabled="!isSorting"
                         >
-                            <template #item="{ element,index }">
-                                <el-card class="kanban-card" shadow="always" @click="editLink(element, index,list)">
+                            <template #item="{ element, index }">
+                                <el-card
+                                    class="kanban-card"
+                                    shadow="always"
+                                    @click="editLink(element, index, list)"
+                                >
                                     {{ element.text }}
                                 </el-card>
                             </template>
@@ -47,12 +51,11 @@
     </main>
     <div class="button-group" style="margin: 20px">
         <!-- 排序按鈕 -->
-        <el-button type="primary" @click="enableSorting"
-            >啟用排序</el-button
-        >
+        <el-button type="primary" @click="enableSorting" v-if="!isSorting">啟用排序</el-button>
+        <el-button type="danger" @click="cancelSorting" v-if="isSorting"
+            >取消</el-button>
         <el-button type="success" @click="saveOrder" v-if="isSorting"
-            >保存排序</el-button
-        >
+            >保存排序</el-button>
     </div>
     <!-- <Footer></Footer> -->
 
@@ -88,7 +91,10 @@
     <el-dialog v-model="isDialogVisible" title="編輯連結" width="400px">
         <el-form label-width="80px">
             <el-form-item label="標題">
-                <el-input v-model="editForm.text" placeholder="請輸入卡片名稱" />
+                <el-input
+                    v-model="editForm.text"
+                    placeholder="請輸入卡片名稱"
+                />
             </el-form-item>
             <el-form-item label="連結">
                 <el-input
@@ -96,15 +102,27 @@
                     placeholder="請輸入連結（可選）"
                 />
             </el-form-item>
-            <el-form-item label="子項目" v-if="editForm.list && editForm.list.length">
-                <template  v-for="(item, index) in editForm.list" :key="index">
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <el-form-item
+                label="子項目"
+                v-if="editForm.list && editForm.list.length"
+            >
+                <template v-for="(item, index) in editForm.list" :key="index">
+                    <div
+                        style="
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            margin-bottom: 10px;
+                        "
+                    >
                         <el-input
                             v-model="item.text"
-                            placeholder="請輸入連結（可選）" />
+                            placeholder="請輸入連結（可選）"
+                        />
                         <el-input
                             v-model="item.link"
-                            placeholder="請輸入連結（可選）"  />
+                            placeholder="請輸入連結（可選）"
+                        />
                     </div>
                 </template>
             </el-form-item>
@@ -116,6 +134,7 @@
             <el-button type="primary" @click="saveEdit">確認</el-button>
         </template>
     </el-dialog>
+    <!-- {{ quickLinksStore.quickLinks }} -->
 </template>
 
 <script setup>
@@ -126,6 +145,8 @@ import CategoryCard from "@/components/CategoryCard.vue";
 import Footer from "@/components/Footer.vue";
 import draggable from "vuedraggable";
 import { v4 as uuidv4 } from "uuid";
+import {useQuickLinksStore} from "@/stores/quickLinks";
+const quickLinksStore = useQuickLinksStore();
 const edit = ref(false);
 // 防抖處理卡片位置更新
 const syncCardPosition = (payload) => {
@@ -190,34 +211,44 @@ const editForm = ref({});
 const currentEditIndex = ref(null);
 const currentEditList = ref(null);
 const isDialogVisible = ref(false);
-const editLink = (link, index,list) => {
-    console.log(link, index);
-    console.log(list);
-    currentEditList.value = list; // 設定當前的清單
+const tmplink = ref(null);
+
+// 編輯連結
+const editLink = (link, index, list) => {
+    console.log("編輯連結:", link, "索引:", index, "所在清單:", list);
     editForm.value = JSON.parse(JSON.stringify(link)); // 深拷貝
     currentEditIndex.value = index;
+    currentList.value = list;
     isDialogVisible.value = true;
 };
+// 存取編輯結果
+// const saveEdit = () => {
+//     let obj=quickLinksStore.quickLinks.find(l => l.id === currentList.value.id)
+//     // console.log(quickLinksStore.quickLinks)
+//     console.log(obj)
+//     if (currentEditIndex.value != null) {
+//         currentList.value.items[currentEditIndex.value] = JSON.parse(
+//             JSON.stringify(editForm.value)
+//         );
+//     }
+//     isDialogVisible.value = false;
+// };
+// 保存編輯
 const saveEdit = () => {
-    if (currentEditIndex.value == null) {
-        // 新增部門
-        // data.value.push(JSON.parse(JSON.stringify(editForm.value)));
-        alert("新增部門功能尚未實作");
-    } else {
-        // 編輯現有部門
-        const updatedLink = JSON.parse(JSON.stringify(editForm.value));
-        quickLinks.value.items[currentEditIndex.value] = updatedLink;
+    if (currentEditIndex.value != null && currentList.value) {
+        quickLinksStore.updateLink(currentList.value.id, currentEditIndex.value, editForm.value);
     }
     isDialogVisible.value = false;
 };
-const deleteLink= () => {
-     ElMessageBox.confirm("確定要移除該所處?", "警告", {
+// 刪除連結
+const deleteLink = () => {
+    ElMessageBox.confirm("確定要移除該連結?", "警告", {
         confirmButtonText: "確定",
         cancelButtonText: "取消",
         type: "warning",
     })
         .then(() => {
-               if (currentEditIndex.value != null && currentList.value) {
+            if (currentEditIndex.value != null && currentList.value) {
                 // 從對應的清單中移除該連結
                 currentList.value.items.splice(currentEditIndex.value, 1);
                 isDialogVisible.value = false;
@@ -236,7 +267,7 @@ const deleteLink= () => {
             //     message: '取消移除',
             //   })
         });
-}
+};
 //顯示搜尋列
 const showSearch = ref(false);
 // 搜尋字樣
@@ -567,37 +598,27 @@ const quickLinks = ref([
         ],
     },
 ]);
-//新增：根據搜尋字串過濾 quickLinks
-const filteredLinks = computed(() => {
-    if (!input1.value.trim()) return quickLinks.value;
-    const keyword = input1.value.trim().toLowerCase();
-    // 只顯示有符合關鍵字的分類與子連結
-    return quickLinks.value
-        .map((link) => {
-            // 檢查分類名稱或子連結文字是否有符合
-            const matchedItems = link.items.filter((item) =>
-                item.text.toLowerCase().includes(keyword)
-            );
-            if (
-                link.category.toLowerCase().includes(keyword) ||
-                matchedItems.length > 0
-            ) {
-                return {
-                    ...link,
-                    items: matchedItems.length > 0 ? matchedItems : link.items,
-                };
-            }
-            return null;
-        })
-        .filter(Boolean);
-});
+
 // 排序功能
 const isSorting = ref(false); // 控制是否正在排序
+const tempQuickLinks = ref([]); // 用於存放排序過程中的臨時資料
+// 開啟排序功能
 const enableSorting = () => {
+    // tempQuickLinks.value = JSON.parse(
+    //     JSON.stringify(quickLinksStore.quickLinks)
+    // ); // 深拷貝原始資料
     isSorting.value = true;
 };
 
+// 保存排序
 const saveOrder = () => {
+    // quickLinksStore.setQuickLinks(tempQuickLinks.value); // 更新到 store
+    isSorting.value = false;
+};
+
+// 取消排序
+const cancelSorting = () => {
+    tempQuickLinks.value = []; // 清空臨時資料
     isSorting.value = false;
 };
 </script>

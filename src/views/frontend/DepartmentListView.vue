@@ -1,9 +1,9 @@
 <template>
     <div class="about">
         <el-row :gutter="5">
-            <el-col class="department_card" style="padding: 10px;" :span="8" v-for="(d, idx) in data" :key="d.idx" :id="d.name" @click="routerPush(d)">
+            <el-col class="department_card" style="padding: 10px;" :span="8" v-for="(d, idx) in departmentListStore.departmentList" :key="d.idx" :id="d.name" >
                 <el-card  shadow="hover" style="height: 100%; margin: 10px;"> 
-                    <DepartmentCard   :data="d"  />
+                    <DepartmentCard    :data="d"  />
                 </el-card>
             </el-col>
         </el-row>
@@ -15,6 +15,8 @@ import { ref } from 'vue';
 import ManagerCard from '@/components/ManagerCard.vue';
 import DepartmentCard from '@/components/DepartmentCard.vue';
 import { useRouter } from "vue-router";
+import {useDepartmentListStore} from "@/stores/departmentList";
+const departmentListStore = useDepartmentListStore();
 const router  = useRouter();
 let data = ref([
   {
@@ -161,12 +163,12 @@ const routerPush = (data) => {
 </script>
 
 <style lang="scss" scoped>
-.el-card:hover {
-  box-shadow: 0 4px 16px 0 #d1d8e0;
-  transform: translateY(-2px) scale(1.02);
-}
+// .el-card:hover {
+//   box-shadow: 0 4px 16px 0 #d1d8e0;
+//   transform: translateY(-2px) scale(1.02);
+// }
 .department_card{
-   cursor: pointer;
+  //  cursor: pointer;
    transition: transform 0.2s; 
 }
 /* @media (min-width: 1024px) {

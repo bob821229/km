@@ -1,214 +1,70 @@
-<template>
-    <h1 style="text-align: center">編輯模式</h1>
-    <el-table :data="managerList" style="width: 100%" size="large" >
-        <el-table-column prop="name" label="名稱" width="180" />
-        <el-table-column prop="positionTitle" label="職稱" width="180" />
-        <el-table-column prop="department" label="部門" />
-        <el-table-column
-            prop="computerExpertise"
-            label="專業領域"
-            show-overflow-tooltip
-        />
-        <el-table-column
-            prop="schools"
-            label="學歷"
-            :formatter="formatterSchools"
-            show-overflow-tooltip
-        />
-        <el-table-column
-            prop="workExperience"
-            label="經歷"
-            :formatter="formatterWorkExperience"
-            show-overflow-tooltip
-        />
-        <el-table-column prop="imageUrl" label="照片" v-if="false" />
-        <el-table-column prop="imageUrl" label="功能">
-            <template #default="scope">
-                <el-button
-                    size="small"
-                    @click="handleEdit(scope.$index, scope.row)"
-                >
-                    編輯
-                </el-button>
-                <el-button
-                    size="small"
-                    type="danger"
-                    @click="handleDelete(scope.$index, scope.row)"
-                >
-                    刪除
-                </el-button>
-            </template>
-        </el-table-column>
-    </el-table>
-    <!-- // 編輯對話框 -->
-    <el-dialog v-model="isDialogVisible" :title="'編輯主管資料'">
-        <el-form :model="editForm">
-            <el-form-item label="名稱">
-                <el-input v-model="editForm.name" />
-            </el-form-item>
-            <el-form-item label="職稱">
-                <el-input v-model="editForm.positionTitle" />
-            </el-form-item>
-            <el-form-item label="部門">
-                <el-input v-model="editForm.department" />
-            </el-form-item>
-            <el-form-item label="專業領域">
-                <div
-                    v-for="(c, idx) in editForm.computerExpertise"
-                    :key="idx"
-                    style="
-                        display: flex;
-                        align-items: center;
-                        margin-bottom: 10px;
-                        width: 100%;
-                    "
-                >
-                    <el-input
-                        v-model="editForm.computerExpertise[idx]"
-                        placeholder="輸入核心內容"
-                        style="flex: 1; margin-right: 10px"
-                    />
-                    <el-button
-                        :icon="Close"
-                        type="danger"
-                        @click="removeCore(idx)"
-                    ></el-button>
-                </div>
-                <el-button :icon="Plus" type="primary" @click="addCore"
-                    >新增專業領域</el-button
-                >
-            </el-form-item>
-            <el-form-item label="學歷">
-                <div
-                    v-for="(c, idx) in editForm.schools"
-                    :key="idx"
-                    style="
-                        display: flex;
-                        align-items: center;
-                        margin-bottom: 10px;
-                        width: 100%;
-                    "
-                >
-                    <el-input
-                        v-model="editForm.schools[idx].name"
-                        placeholder="輸入核心內容"
-                        style="flex: 1; margin-right: 10px"
-                    />
-                    <el-input
-                        v-model="editForm.schools[idx].department"
-                        placeholder="輸入核心內容"
-                        style="flex: 1; margin-right: 10px"
-                    />
-                    <el-button
-                        :icon="Close"
-                        type="danger"
-                        @click="removeCore(idx)"
-                    ></el-button>
-                </div>
-                <el-button :icon="Plus" type="primary" @click="addCore"
-                    >新增學歷</el-button
-                >
-            </el-form-item>
-            <el-form-item label="經歷">
-                <div
-                    v-for="(c, idx) in editForm.workExperience"
-                    :key="idx"
-                    style="
-                        display: flex;
-                        align-items: center;
-                        margin-bottom: 10px;
-                        width: 100%;
-                    "
-                >
-                    <el-input
-                        v-model="editForm.workExperience[idx].company"
-                        placeholder="輸入核心內容"
-                        style="flex: 1; margin-right: 10px"
-                    />
-                    <el-input
-                        v-model="editForm.workExperience[idx].position"
-                        placeholder="輸入核心內容"
-                        style="flex: 1; margin-right: 10px"
-                    />
-                    <el-button
-                        :icon="Close"
-                        type="danger"
-                        @click="removeCore(idx)"
-                    ></el-button>
-                </div>
-                <el-button :icon="Plus" type="primary" @click="addCore"
-                    >新增經歷</el-button
-                >
-            </el-form-item>
-        </el-form>
-        <template #footer>
-            <el-button @click="isDialogVisible = false">取消</el-button>
-            <el-button type="danger" @click="deleteDepartment">刪除</el-button>
-            <el-button type="primary" @click="saveEdit">保存</el-button>
-        </template>
-    </el-dialog>
-    <!-- <el-button
-        style="margin-top: 50px"
-        size="large"
-        type="primary"
-        @click="goBack"
-        >返回</el-button
-    > -->
-</template>
-
-<script setup>
 import { ref, computed } from "vue";
-import ManagerCard from "@/components/ManagerCard.vue";
-import DepartmentCard from "@/components/DepartmentCard.vue";
-import { useRoute, useRouter } from "vue-router";
-import {
-    Delete,
-    Edit,
-    Search,
-    Share,
-    Upload,
-    Close,
-    Plus,
-} from "@element-plus/icons-vue";
-const router = useRouter();
-const isDialogVisible = ref(false);
-function handleEdit(a, b) {
-    editForm.value = JSON.parse(JSON.stringify(b));
-    isDialogVisible.value = true;
-}
-function formatterSchools(r) {
-    return r.schools.map((s) => `${s.name} ${s.department}`).join(", ");
-}
-function formatterWorkExperience(r) {
-    return r.workExperience.map((s) => `${s.company} ${s.position}`).join(", ");
-}
-function goBack() {
-    router.back();
-}
-const route = useRoute();
-const manager = ref(route.params?.manager);
-const title = ref(route.params?.title);
-const data = computed(() => {
-    if (!manager.value || !managerList.length) return null;
-    const managerData = managerList.find((item) => item.name === manager.value);
-    if (!managerData) return null;
-    return {
-        ...managerData,
-        imageUrl: new URL(
-            `/assets/images/${managerData.imageUrl}`,
-            import.meta.url
-        ).href,
-    };
-});
-const editForm = ref({
-    name: "",
-    positionTitle: "",
-    department: "",
-    schools: [],
-    workExperience: [],
-    imageUrl: "",
-});
-let managerList = [
+import { defineStore } from "pinia";
+
+export const useSupervisorProfileListStore = defineStore("supervisorProfileList", () => {
+    // 主管清單
+    const supervisorProfileList = ref([
+        {
+        name: "邱豐真",
+        positionTitle: "分院長",
+        department: "台北分院",
+        computerExpertise: ["組織管理", "政策分析", "農田水利政策企劃及相關法制作業"],
+        schools: [
+            {
+                academicDegree: "博士候選人(在職進修)", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "臺北大學", //學校名稱
+                department: "公共行政暨政策研究所", //科系
+                period: [null, null], //修業起訖年月
+            },
+            {
+                academicDegree: "公共政策碩士", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "臺北大學", //學校名稱
+                department: "公共行政暨政策研究所", //科系
+                period: [null, null], //修業起訖年月
+            },
+        ], //學歷
+        //職務經歷
+        workExperience: [
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "資深研究專員", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "副院長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "助理院長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "研究二所所長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "政策法制組組長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "淡江大學水資源管理與政策研究中心", //公司名稱
+                position: "農水法制組 組長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "淡江大學水資源管理與政策研究中心", //公司名稱
+                position: "農田水利組副組長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+        ],
+        imageUrl:'邱豐真.jpg'
+    },
     {
         name: "林賢銘",
         positionTitle: "所長",
@@ -311,6 +167,55 @@ let managerList = [
         imageUrl: "吳柏澍.jpg",
     },
     {
+        name: "許峻嘉",
+        positionTitle: "副所長",
+        department: "研究二所",
+        computerExpertise: [
+            "人事行政",
+            "公部門人力資源管理",
+        ],
+        schools: [
+            {
+                academicDegree: "博士班肄業", //學位
+                degreeStatus: "肄業", //畢業狀況
+                name: "國立台北大學", //學校名稱
+                department: "公共行政暨政策學系", //科系
+                period: [null, null], //修業起訖年月
+            },
+            {
+                academicDegree: "碩士", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "國立台北大學", //學校名稱
+                department: "公共行政暨政策學系", //科系
+                period: [null, null], //修業起訖年月
+            },
+        ], //學歷
+        //職務經歷
+        workExperience: [
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "研究二所研究專員", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "研究專員", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "北京漢林國際健康診療投資有限公司", //公司名稱
+                position: "人力資源兼運營經理", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "北京陽光未來藝術教育基金會", //公司名稱
+                position: "項目管理兼人力資源專員", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+        ],
+        imageUrl: "許峻嘉.jpg",
+    },
+    {
         name: "簡靖芳",
         positionTitle: "所長",
         department: "研究三所",
@@ -354,30 +259,30 @@ let managerList = [
         imageUrl: "簡靖芳.jpg",
     },
     {
-        name: "侯玉娟",
+        name: "徐  顥",
         positionTitle: "所長",
         department: "研究四所",
-        computerExpertise: ["統計分析", "市場調查", "組織管理", "計畫行政業務"],
+        computerExpertise: ["水處理工程", "水質處理與分析", "環境教育"],
         schools: [
             {
-                academicDegree: "碩士班 (進修中)", //學位
+                academicDegree: "博士", //學位
                 degreeStatus: "畢業", //畢業狀況
-                name: "國立中興大學", //學校名稱
-                department: "水土保持研究所", //科系
+                name: "國立暨南國際大學", //學校名稱
+                department: "土木工程學系", //科系
                 period: [null, null], //修業起訖年月
             },
             {
                 academicDegree: "碩士", //學位
                 degreeStatus: "畢業", //畢業狀況
-                name: "淡江大學", //學校名稱
-                department: "管理科學所", //科系
+                name: "國立暨南國際大學", //學校名稱
+                department: "土木工程學系", //科系
                 period: [null, null], //修業起訖年月
             },
             {
                 academicDegree: "學士", //學位
                 degreeStatus: "畢業", //畢業狀況
-                name: "淡江大學", //學校名稱
-                department: "統計學系", //科系
+                name: "國立暨南國際大學", //學校名稱
+                department: "土木工程學系", //科系
                 period: [null, null], //修業起訖年月
             },
         ], //學歷
@@ -385,26 +290,72 @@ let managerList = [
         workExperience: [
             {
                 company: "台灣水資源與農業研究院", //公司名稱
-                position: "研究專員", //職務名稱
+                position: "研究六所 研究專員", //職務名稱
                 period: [null, null], //服務起訖年月
             },
             {
-                company: "淡江大學水資源管理與政策研究中心", //公司名稱
-                position: "研究專員", //職務名稱
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "研究四所 研究專員", //職務名稱
                 period: [null, null], //服務起訖年月
             },
             {
-                company: "階梯數位科技股份有限公司", //公司名稱
-                position: "數學科教學", //職務名稱
+                company: "國立暨南國際大學通識教育中心", //公司名稱
+                position: "兼任助理教授、講師", //職務名稱
                 period: [null, null], //服務起訖年月
             },
             {
-                company: "凱鴻環保科技股份有限公司", //公司名稱
-                position: "助理秘書", //職務名稱
+                company: "國立暨南國際大學通識教育中心", //公司名稱
+                position: "R立方學程教師社群召集人", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "國立暨南國際大學永續農業中心", //公司名稱
+                position: "產品認證組組長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "國立暨南國際大學科技學院", //公司名稱
+                position: "第二期大學社會責任實踐計畫業師", //職務名稱
                 period: [null, null], //服務起訖年月
             },
         ],
-        imageUrl: "侯玉娟.jpg",
+        imageUrl: "徐顥.jpg",
+    },
+    {
+        name: "謝宜叡",
+        positionTitle: "副所長",
+        department: "研究四所",
+        computerExpertise: ["土木工程", "結構工程", "工程製圖"],
+        schools: [
+            {
+                academicDegree: "碩士", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "國立台北科技大學", //學校名稱
+                department: "土木與防災學系結構組", //科系
+                period: [null, null], //修業起訖年月
+            },
+            {
+                academicDegree: "學士", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "淡江大學土木工程學系", //學校名稱
+                department: "營建管理組", //科系
+                period: [null, null], //修業起訖年月
+            },
+        ], //學歷
+        //職務經歷
+        workExperience: [
+            {
+                company: "台灣水資源與農業研究院研究四所", //公司名稱
+                position: "副所長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "台灣水資源與農業研究院研究四所", //公司名稱
+                position: "研究專員", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+        ],
+        imageUrl: "謝宜叡.jpg",
     },
     {
         name: "劉柏江",
@@ -535,6 +486,46 @@ let managerList = [
             },
         ],
         imageUrl: "紀祥鈺.jpg",
+    },
+    {
+        name: "蕭維廷",
+        positionTitle: "副所長",
+        department: "研究六所",
+        computerExpertise: [
+            "生態學",
+            "動物行為學",
+            "野生動物調查",
+        ],
+        schools: [
+            {
+                academicDegree: "碩士", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "國立屏東科技大學", //學校名稱
+                department: "野生動物保育研究所", //科系
+                period: [null, null], //修業起訖年月
+            },
+            {
+                academicDegree: "學士", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "中國文化大學", //學校名稱
+                department: "森林暨自然保育學系", //科系
+                period: [null, null], //修業起訖年月
+            },
+        ], //學歷
+        //職務經歷
+        workExperience: [
+            {
+                company: "台灣水資源與農業研究院研究四所", //公司名稱
+                position: "研究專員", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "蝌蚪池塘自然文創", //公司名稱
+                position: "動物生態講師", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+        ],
+        imageUrl: "蕭維廷.jpg",
     },
     {
         name: "陳昱蓉",
@@ -726,89 +717,24 @@ let managerList = [
         ],
         imageUrl: "康文龍.jpg",
     },
-];
-</script>
-
-<style lang="scss" scoped>
-.txt-color {
-    color: #a47332;
-}
-.image_wrap {
-    height: 100%;
-    max-width: 310px;
-}
-.information_wrap {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0 20px;
-    // align-items: ;
-}
-/* @media (min-width: 1024px) {
-    .about {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
+]);
+    // 初始化資料
+    function setSupervisorProfileList(data) {
+        supervisorProfileList.value = data;
     }
-} */
-
-.profile-card {
-    min-width: 800px;
-    margin-top: 30px;
-    .card-header {
-        background: #c99e0b;
-        color: #fff;
-        font-size: 1.4rem;
-        font-weight: bold;
-        padding: 0.6rem 1rem;
-        .dept-title {
-            color: #fff;
+    // 更新某個清單中的項目
+    function updateLink(listId, index, updatedLink) {
+        const list = supervisorProfileList.value.find((l) => l.id === listId);
+        if (list) {
+            list.items[index] = updatedLink;
         }
     }
-}
-.image_wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #fff;
-    border-right: 1px solid #ddd;
-    height: 100%;
-    min-height: 220px;
-}
-.info-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-left: 10px;
-    .info-row {
-        display: flex;
-        border-bottom: 1px solid #ddd;
-        min-height: 48px;
-        align-items: flex-start;
-        &:last-child {
-            border-bottom: none;
-        }
-        .info-label {
-            width: 150px;
-            font-weight: bold;
-            color: #333;
-            padding: 8px 0 0 0;
-            flex-shrink: 0;
-            font-size: 20px;
-        }
-        .info-content {
-            flex: 1;
-            padding: 8px 0 0 0;
-            color: #222;
-            line-height: 1.7;
-            word-break: break-all;
-            font-size: 20px;
+    // 刪除某個清單中的項目
+    function deleteLink(listId, index) {
+        const list = supervisorProfileList.value.find((l) => l.id === listId);
+        if (list) {
+            list.items.splice(index, 1);
         }
     }
-}
-.manager-name {
-    font-size: 1.8rem;
-    color: #2d3ecb;
-    font-weight: bold;
-    padding: 8px 0;
-}
-</style>
+    return { supervisorProfileList, setSupervisorProfileList, updateLink, deleteLink };
+});

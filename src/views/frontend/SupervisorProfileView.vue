@@ -1,98 +1,203 @@
 <template>
-   <el-card style="width: 1280px;margin-top: 50px;" v-if="data"  shadow="always">
-    <template #header>
-      <div class="card-header">
-        <h1 style="text-align: center;" class="txt-color">{{ data.department }}</h1>
-        <h2 style="text-align: center;" class="txt-color">{{ title }}</h2>
-      </div>
-    </template>
-     <el-row>
-        <el-col :span="6">
-          <div class="image_wrap" >
-            <!-- <img  style="width: 100%; height: 100%" :src="data?.imageUrl"   alt=""> -->
-            <el-image v-if="data?.imageUrl"  style="width: 100%;"  fit="cover"  :src="data?.imageUrl" />
-          </div>
-        </el-col>
-         <el-col :span="18">
-        <div class="info-table">
-          <div class="info-row">
-            <span class="manager-name">
-                {{ data?.name }}　{{ data?.positionTitle }}
-            </span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">專業領域</span>
-            <span class="info-content">
-              <template v-if="data?.computerExpertise && data.computerExpertise.length">
-                {{ data.computerExpertise.join('、') }}
-              </template>
-            </span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">學歷</span>
-            <span class="info-content">
-              <template v-if="data?.schools && data.schools.length">
-                <div v-for="(s, idx) in data.schools" :key="idx">
-                  {{ s.name }}{{ s.department ? ' ' + s.department : '' }} {{ s.academicDegree ? s.academicDegree : '' }}
+    <!-- {{ supervisorProfileListStore.supervisorProfileList }} -->
+    <el-card
+        style="width: 1280px; margin-top: 50px"
+        v-if="data"
+        shadow="always"
+    >
+        <template #header>
+            <div class="card-header">
+                <h1 style="text-align: center" class="txt-color">
+                    {{ data.department }}
+                </h1>
+                <h2 style="text-align: center" class="txt-color">
+                    {{ title }}
+                </h2>
+            </div>
+        </template>
+        <el-row>
+            <el-col :span="6">
+                <div class="image_wrap">
+                    <!-- <img  style="width: 100%; height: 100%" :src="data?.imageUrl"   alt=""> -->
+                    <el-image
+                        v-if="data?.imageUrl"
+                        style="width: 100%"
+                        fit="cover"
+                        :src="data?.imageUrl"
+                    />
                 </div>
-              </template>
-            </span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">經歷</span>
-            <span class="info-content">
-              <template v-if="data?.workExperience && data.workExperience.length">
-                <div v-for="(w, idx) in data.workExperience" :key="idx">
-                  {{ w.company }} {{ w.position }}
+            </el-col>
+            <el-col :span="18">
+                <div class="info-table">
+                    <div class="info-row">
+                        <span class="manager-name">
+                            {{ data?.name }}　{{ data?.positionTitle }}
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">專業領域</span>
+                        <span class="info-content">
+                            <template
+                                v-if="
+                                    data?.computerExpertise &&
+                                    data.computerExpertise.length
+                                "
+                            >
+                                {{ data.computerExpertise.join("、") }}
+                            </template>
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">學歷</span>
+                        <span class="info-content">
+                            <template
+                                v-if="data?.schools && data.schools.length"
+                            >
+                                <div
+                                    v-for="(s, idx) in data.schools"
+                                    :key="idx"
+                                >
+                                    {{ s.name
+                                    }}{{
+                                        s.department ? " " + s.department : ""
+                                    }}
+                                    {{
+                                        s.academicDegree ? s.academicDegree : ""
+                                    }}
+                                </div>
+                            </template>
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">經歷</span>
+                        <span class="info-content">
+                            <template
+                                v-if="
+                                    data?.workExperience &&
+                                    data.workExperience.length
+                                "
+                            >
+                                <div
+                                    v-for="(w, idx) in data.workExperience"
+                                    :key="idx"
+                                >
+                                    {{ w.company }} {{ w.position }}
+                                </div>
+                            </template>
+                        </span>
+                    </div>
                 </div>
-              </template>
-            </span>
-          </div>
-        </div>
-      </el-col>
-    </el-row>
-  </el-card>
-   <span v-else>
-    無資料
-</span>
-<el-button style="margin-top: 50px;" size="large" type="primary" @click="goBack">返回</el-button>
+            </el-col>
+        </el-row>
+    </el-card>
+    <span v-else> 無資料 </span>
+    <el-button
+        style="margin-top: 50px"
+        size="large"
+        type="primary"
+        @click="goBack"
+        >返回</el-button
+    >
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
 import ManagerCard from "@/components/ManagerCard.vue";
 import DepartmentCard from "@/components/DepartmentCard.vue";
-import { useRoute,useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import {useSupervisorProfileListStore} from "@/stores/supervisorProfileList";
+const supervisorProfileListStore = useSupervisorProfileListStore();
 const router = useRouter();
 function goBack() {
-  router.back();
+    router.back();
 }
-const route = useRoute()
-console.log('window.history.state:', window.history.state)
-const manager = ref(route.params?.manager)
-const title = ref(route.params?.title)
+const route = useRoute();
+// console.log('window.history.state:', window.history.state)
+const manager = ref(route.params?.manager);
+const title = ref(route.params?.title);
 const data = computed(() => {
-  if (!manager.value || !managerList.length) return null
-  const managerData = managerList.find((item) => item.name === manager.value)
-  if (!managerData) return null
-  return {
-    ...managerData,
-    imageUrl: `/triwra-portal/assets/images/${managerData.imageUrl}` // 修正路徑
-  }
-})
+    if (!manager.value || !supervisorProfileListStore.supervisorProfileList.length) return null;
+    const managerData = supervisorProfileListStore.supervisorProfileList.find((item) => item.name === manager.value);
+    if (!managerData) return null;
+    return {
+        ...managerData,
+        imageUrl: `/km/assets/images/${managerData.imageUrl}`, // 修正路徑
+    };
+});
 function getImageUrl(fileName) {
-  console.log('getImageUrl:', fileName);
-  if (!fileName) return '';
-  try {
-    const url = new URL(`/assets/images/${fileName}`, import.meta.url).href;
-    console.log('image url:', url);
-    return url;
-  } catch (e) {
-    console.error('Image load error:', e);
-    return '';
-  }
+    console.log("getImageUrl:", fileName);
+    if (!fileName) return "";
+    try {
+        const url = new URL(`/assets/images/${fileName}`, import.meta.url).href;
+        console.log("image url:", url);
+        return url;
+    } catch (e) {
+        console.error("Image load error:", e);
+        return "";
+    }
 }
 let managerList = [
+        {
+        name: "邱豐真",
+        positionTitle: "分院長",
+        department: "台北分院",
+        computerExpertise: ["組織管理", "政策分析", "農田水利政策企劃及相關法制作業"],
+        schools: [
+            {
+                academicDegree: "博士候選人(在職進修)", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "臺北大學", //學校名稱
+                department: "公共行政暨政策研究所", //科系
+                period: [null, null], //修業起訖年月
+            },
+            {
+                academicDegree: "公共政策碩士", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "臺北大學", //學校名稱
+                department: "公共行政暨政策研究所", //科系
+                period: [null, null], //修業起訖年月
+            },
+        ], //學歷
+        //職務經歷
+        workExperience: [
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "資深研究專員", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "副院長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "助理院長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "研究二所所長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "政策法制組組長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "淡江大學水資源管理與政策研究中心", //公司名稱
+                position: "農水法制組 組長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "淡江大學水資源管理與政策研究中心", //公司名稱
+                position: "農田水利組副組長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+        ],
+        imageUrl:'邱豐真.jpg'
+    },
     {
         name: "林賢銘",
         positionTitle: "所長",
@@ -137,7 +242,7 @@ let managerList = [
                 period: [null, null], //服務起訖年月
             },
         ],
-        imageUrl:'林賢銘.jpg'
+        imageUrl: "林賢銘.jpg",
     },
     {
         name: "吳柏澍",
@@ -192,7 +297,56 @@ let managerList = [
                 period: [null, null], //服務起訖年月
             },
         ],
-        imageUrl:'吳柏澍.jpg'
+        imageUrl: "吳柏澍.jpg",
+    },
+    {
+        name: "許峻嘉",
+        positionTitle: "副所長",
+        department: "研究二所",
+        computerExpertise: [
+            "人事行政",
+            "公部門人力資源管理",
+        ],
+        schools: [
+            {
+                academicDegree: "博士班肄業", //學位
+                degreeStatus: "肄業", //畢業狀況
+                name: "國立台北大學", //學校名稱
+                department: "公共行政暨政策學系", //科系
+                period: [null, null], //修業起訖年月
+            },
+            {
+                academicDegree: "碩士", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "國立台北大學", //學校名稱
+                department: "公共行政暨政策學系", //科系
+                period: [null, null], //修業起訖年月
+            },
+        ], //學歷
+        //職務經歷
+        workExperience: [
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "研究二所研究專員", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "研究專員", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "北京漢林國際健康診療投資有限公司", //公司名稱
+                position: "人力資源兼運營經理", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "北京陽光未來藝術教育基金會", //公司名稱
+                position: "項目管理兼人力資源專員", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+        ],
+        imageUrl: "許峻嘉.jpg",
     },
     {
         name: "簡靖芳",
@@ -235,33 +389,33 @@ let managerList = [
                 period: [null, null], //服務起訖年月
             },
         ],
-        imageUrl:'簡靖芳.jpg'
+        imageUrl: "簡靖芳.jpg",
     },
     {
-        name: "侯玉娟",
+        name: "徐  顥",
         positionTitle: "所長",
         department: "研究四所",
-        computerExpertise: ["統計分析", "市場調查", "組織管理", "計畫行政業務"],
+        computerExpertise: ["水處理工程", "水質處理與分析", "環境教育"],
         schools: [
             {
-                academicDegree: "碩士班 (進修中)", //學位
+                academicDegree: "博士", //學位
                 degreeStatus: "畢業", //畢業狀況
-                name: "國立中興大學", //學校名稱
-                department: "水土保持研究所", //科系
+                name: "國立暨南國際大學", //學校名稱
+                department: "土木工程學系", //科系
                 period: [null, null], //修業起訖年月
             },
             {
                 academicDegree: "碩士", //學位
                 degreeStatus: "畢業", //畢業狀況
-                name: "淡江大學", //學校名稱
-                department: "管理科學所", //科系
+                name: "國立暨南國際大學", //學校名稱
+                department: "土木工程學系", //科系
                 period: [null, null], //修業起訖年月
             },
             {
                 academicDegree: "學士", //學位
                 degreeStatus: "畢業", //畢業狀況
-                name: "淡江大學", //學校名稱
-                department: "統計學系", //科系
+                name: "國立暨南國際大學", //學校名稱
+                department: "土木工程學系", //科系
                 period: [null, null], //修業起訖年月
             },
         ], //學歷
@@ -269,26 +423,72 @@ let managerList = [
         workExperience: [
             {
                 company: "台灣水資源與農業研究院", //公司名稱
-                position: "研究專員", //職務名稱
+                position: "研究六所 研究專員", //職務名稱
                 period: [null, null], //服務起訖年月
             },
             {
-                company: "淡江大學水資源管理與政策研究中心", //公司名稱
-                position: "研究專員", //職務名稱
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "研究四所 研究專員", //職務名稱
                 period: [null, null], //服務起訖年月
             },
             {
-                company: "階梯數位科技股份有限公司", //公司名稱
-                position: "數學科教學", //職務名稱
+                company: "國立暨南國際大學通識教育中心", //公司名稱
+                position: "兼任助理教授、講師", //職務名稱
                 period: [null, null], //服務起訖年月
             },
             {
-                company: "凱鴻環保科技股份有限公司", //公司名稱
-                position: "助理秘書", //職務名稱
+                company: "國立暨南國際大學通識教育中心", //公司名稱
+                position: "R立方學程教師社群召集人", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "國立暨南國際大學永續農業中心", //公司名稱
+                position: "產品認證組組長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "國立暨南國際大學科技學院", //公司名稱
+                position: "第二期大學社會責任實踐計畫業師", //職務名稱
                 period: [null, null], //服務起訖年月
             },
         ],
-        imageUrl:'侯玉娟.jpg'
+        imageUrl: "徐顥.jpg",
+    },
+    {
+        name: "謝宜叡",
+        positionTitle: "副所長",
+        department: "研究四所",
+        computerExpertise: ["土木工程", "結構工程", "工程製圖"],
+        schools: [
+            {
+                academicDegree: "碩士", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "國立台北科技大學", //學校名稱
+                department: "土木與防災學系結構組", //科系
+                period: [null, null], //修業起訖年月
+            },
+            {
+                academicDegree: "學士", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "淡江大學土木工程學系", //學校名稱
+                department: "營建管理組", //科系
+                period: [null, null], //修業起訖年月
+            },
+        ], //學歷
+        //職務經歷
+        workExperience: [
+            {
+                company: "台灣水資源與農業研究院研究四所", //公司名稱
+                position: "副所長", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "台灣水資源與農業研究院研究四所", //公司名稱
+                position: "研究專員", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+        ],
+        imageUrl: "謝宜叡.jpg",
     },
     {
         name: "劉柏江",
@@ -368,7 +568,7 @@ let managerList = [
                 period: [null, null], //服務起訖年月
             },
         ],
-        imageUrl:'劉柏江.jpg'
+        imageUrl: "劉柏江.jpg",
     },
     {
         name: "紀祥鈺",
@@ -418,7 +618,47 @@ let managerList = [
                 period: [null, null], //服務起訖年月
             },
         ],
-        imageUrl:'紀祥鈺.jpg'
+        imageUrl: "紀祥鈺.jpg",
+    },
+    {
+        name: "蕭維廷",
+        positionTitle: "副所長",
+        department: "研究六所",
+        computerExpertise: [
+            "生態學",
+            "動物行為學",
+            "野生動物調查",
+        ],
+        schools: [
+            {
+                academicDegree: "碩士", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "國立屏東科技大學", //學校名稱
+                department: "野生動物保育研究所", //科系
+                period: [null, null], //修業起訖年月
+            },
+            {
+                academicDegree: "學士", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "中國文化大學", //學校名稱
+                department: "森林暨自然保育學系", //科系
+                period: [null, null], //修業起訖年月
+            },
+        ], //學歷
+        //職務經歷
+        workExperience: [
+            {
+                company: "台灣水資源與農業研究院研究四所", //公司名稱
+                position: "研究專員", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "蝌蚪池塘自然文創", //公司名稱
+                position: "動物生態講師", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+        ],
+        imageUrl: "蕭維廷.jpg",
     },
     {
         name: "陳昱蓉",
@@ -460,7 +700,7 @@ let managerList = [
                 period: [null, null], //服務起訖年月
             },
         ],
-        imageUrl:'陳昱蓉.jpg'
+        imageUrl: "陳昱蓉.jpg",
     },
     {
         name: "謝青宏",
@@ -512,7 +752,8 @@ let managerList = [
                 period: [null, null], //服務起訖年月
             },
             {
-                company: "中央警察大學犯罪防治學系犯罪問題研究中心「學術專題演講」講座", //公司名稱
+                company:
+                    "中央警察大學犯罪防治學系犯罪問題研究中心「學術專題演講」講座", //公司名稱
                 position: "", //職務名稱
                 period: [null, null], //服務起訖年月
             },
@@ -532,7 +773,7 @@ let managerList = [
                 period: [null, null], //服務起訖年月
             },
         ],
-        imageUrl:'謝青宏.jpg'
+        imageUrl: "謝青宏.jpg",
     },
     {
         name: "吳宜家",
@@ -578,7 +819,7 @@ let managerList = [
                 period: [null, null], //服務起訖年月
             },
         ],
-        imageUrl:'吳宜家.jpg'
+        imageUrl: "吳宜家.jpg",
     },
     {
         name: "康文龍",
@@ -607,25 +848,25 @@ let managerList = [
                 period: [null, null], //服務起訖年月
             },
         ],
-        imageUrl:'康文龍.jpg'
+        imageUrl: "康文龍.jpg",
     },
 ];
 </script>
 
 <style lang="scss" scoped>
-.txt-color{
-    color: #A47332;
+.txt-color {
+    color: #a47332;
 }
-.image_wrap{
-  height: 100%;
-  max-width: 310px;
+.image_wrap {
+    height: 100%;
+    max-width: 310px;
 }
-.information_wrap{
-display: flex;
-flex-direction: column;
-justify-content: center;
-padding:0 20px ;
-// align-items: ;
+.information_wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 20px;
+    // align-items: ;
 }
 /* @media (min-width: 1024px) {
     .about {
@@ -635,63 +876,63 @@ padding:0 20px ;
     }
 } */
 
- .profile-card {
-  min-width: 800px;
-  margin-top: 30px;
-  .card-header {
-    background: #c99e0b;
-    color: #fff;
-    font-size: 1.4rem;
-    font-weight: bold;
-    padding: 0.6rem 1rem;
-    .dept-title {
-      color: #fff;
+.profile-card {
+    min-width: 800px;
+    margin-top: 30px;
+    .card-header {
+        background: #c99e0b;
+        color: #fff;
+        font-size: 1.4rem;
+        font-weight: bold;
+        padding: 0.6rem 1rem;
+        .dept-title {
+            color: #fff;
+        }
     }
-  }
 }
 .image_wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-  border-right: 1px solid #ddd;
-  height: 100%;
-  min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-right: 1px solid #ddd;
+    height: 100%;
+    min-height: 220px;
 }
 .info-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-left: 10px;
-  .info-row {
-    display: flex;
-    border-bottom: 1px solid #ddd;
-    min-height: 48px;
-    align-items: flex-start;
-    &:last-child {
-      border-bottom: none;
+    width: 100%;
+    border-collapse: collapse;
+    margin-left: 10px;
+    .info-row {
+        display: flex;
+        border-bottom: 1px solid #ddd;
+        min-height: 48px;
+        align-items: flex-start;
+        &:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            width: 150px;
+            font-weight: bold;
+            color: #333;
+            padding: 8px 0 0 0;
+            flex-shrink: 0;
+            font-size: 20px;
+        }
+        .info-content {
+            flex: 1;
+            padding: 8px 0 0 0;
+            color: #222;
+            line-height: 1.7;
+            word-break: break-all;
+            font-size: 20px;
+        }
     }
-    .info-label {
-      width: 150px;
-      font-weight: bold;
-      color: #333;
-      padding: 8px 0 0 0;
-      flex-shrink: 0;
-      font-size:20px;
-    }
-    .info-content {
-      flex: 1;
-      padding: 8px 0 0 0;
-      color: #222;
-      line-height: 1.7;
-      word-break: break-all;
-      font-size: 20px;
-    }
-  }
 }
 .manager-name {
-  font-size: 1.8rem;
-  color: #2d3ecb;
-  font-weight: bold;
-  padding: 8px 0;
+    font-size: 1.8rem;
+    color: #2d3ecb;
+    font-weight: bold;
+    padding: 8px 0;
 }
 </style>
