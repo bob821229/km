@@ -38,7 +38,7 @@ export const useQuickLinksStore = defineStore("quickLinks", () => {
                     },
                     {
                         text: "19樓",
-                        link: "https://tsr01.triwra.org.tw/km/ad_work/download/o01-04-19F.pdf",
+                        link: "data/download/19F.pdf",
                     },
                     {
                         text: "16樓",
@@ -63,7 +63,7 @@ export const useQuickLinksStore = defineStore("quickLinks", () => {
                 text: "交通位置資訊",
                 list: [
                     { text: "淡水本院", link: "data/淡水本院交通資訊.docx" },
-                    { text: "台北分院", link: "data/台北分院交通資訊.docx" },
+                    { text: "分院辦公室", link: "data/分院交通資訊.pdf" },
                 ],
             },
             {
@@ -180,11 +180,22 @@ export const useQuickLinksStore = defineStore("quickLinks", () => {
                 text: "數位資產平台",
                 link: "https://info.triwra.org.tw/Account/Login?ReturnUrl=%2F",
             },
+            {
+                id: uuidv4(),
+                text: "計畫投標作業",
+                link: "https://cv.triwra.org.tw/",
+                list: [
+                    { text: "計畫投標程序",link: "data/計畫投標程序.pdf",},
+                    { text: "計畫摘要表", link: "data/投標計畫摘要表.pdf" },
+                    { text: "計畫標案管理系統", link: "https://tsr01.triwra.org.tw/erp/plantendermanage/Home/Login" },
+                    { text: "個人簡歷管理系統", link: "https://cv.triwra.org.tw/" },
+                ],
+            },
             { id: uuidv4(), text: "購置書籍目錄", link: "data/booklist.xlsx" },
             {
                 id: uuidv4(),
                 text: "常用廠商名錄",
-                link: "https://tsr01.triwra.org.tw/km/ad_work/kmlist_vendor.asp",
+                link: "http://tsr01.triwra.org.tw/erp/ad_work/kmlist_vendor.asp ",
             },
             // {
             //     id: uuidv4(),

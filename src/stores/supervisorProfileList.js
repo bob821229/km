@@ -570,9 +570,60 @@ export const useSupervisorProfileListStore = defineStore("supervisorProfileList"
         imageUrl: "陳昱蓉.jpg",
     },
     {
+        name: "李佳真",
+        positionTitle: "處長",
+        department: "公共事務處",
+        computerExpertise: [
+            "整合行銷",
+            "品牌包裝",
+            "媒體公關",
+            "採訪編輯",
+            "專案管理",
+        ],
+        schools: [
+            {
+                academicDegree: "碩士", //學位
+                degreeStatus: "畢業", //畢業狀況
+                name: "國立政治大學", //學校名稱
+                department: "英研所", //科系
+                period: [null, null], //修業起訖年月
+            }
+        ], //學歷
+        //職務經歷
+        workExperience: [
+            {
+                company: "台灣水資源與農業研究院", //公司名稱
+                position: "研究專員", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "綠光創藝股份有限公司", //公司名稱
+                position: "行銷經理", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "法藍瓷股份有限公司", //公司名稱
+                position: "品牌公關", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company:
+                    "台北101購物中心", //公司名稱
+                position: "多媒體公關主任", //職務名稱
+                period: [null, null], //服務起訖年月
+            },
+            {
+                company: "廣藝基金會", //公司名稱
+                position: "主編", //職務名稱
+                period: [null, null], //服務起訖年月
+            }
+        ],
+        imageUrl: "李佳真.jpg",
+    },
+    {
         name: "謝青宏",
         positionTitle: "副處長",
-        department: "教育推廣處",
+        department: "公共事務處",
         computerExpertise: [
             "行政組織理論與管理",
             "公共政策理論與務實",

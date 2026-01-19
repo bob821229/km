@@ -4,19 +4,19 @@ import { defineStore } from "pinia";
 export const useDepartmentListStore = defineStore("departmentList", () => {
     // 部門列表
     const departmentList = ref([
-        {
-            idx: 0,
-            name: "台北分院",
-            title: "",
-            managers:[
-                {role:"主管",name:"邱豐真",title:"分院長"},
-            ],
-            core: [
-                "公共治理與制度創新研究",
-                "農業環境與政策研究",
-                "林業研究發展",
-            ],
-        },
+        // {
+        //     idx: 0,
+        //     name: "台北分院",
+        //     title: "",
+        //     managers:[
+        //         {role:"主管",name:"邱豐真",title:"分院長"},
+        //     ],
+        //     core: [
+        //         "公共治理與制度創新研究",
+        //         "農業環境與政策研究",
+        //         "林業研究發展",
+        //     ],
+        // },
         {
             idx: 1,
             name: "研究一所",
@@ -25,9 +25,9 @@ export const useDepartmentListStore = defineStore("departmentList", () => {
                 {role:"主管",name:"林賢銘",title:"所長"},
             ],
             core: [
-                "灌溉管理技術精進研究與灌溉水資源調配方案研擬",
-                "農業灌溉用水情勢資料管理、加值應用分析、決策輔助與跨機關交流",
-                "智慧灌溉業務推動與水文數據品管",
+                "農田水利水文分析技術研發",
+                "水資源智慧管理與灌溉配水研究",
+                "農田水利設施管理與災害預警機制研究",
             ],
         },
         {
@@ -39,11 +39,9 @@ export const useDepartmentListStore = defineStore("departmentList", () => {
                 {role:"副主管",name:"許峻嘉",title:"副所長"},
             ],
             core: [
-                "跨域治理與整合",
-                "策略創新與發展",
-                "人力資源管理研究",
-                "組織營運績效管考制度研究",
-                "農田水利事業發展與國土資源整合研究",
+                "人事制度與公部門人力資源管理",
+                "土地管理與治理",
+                "公私協力輔導"
             ],
         },
         {
@@ -54,9 +52,9 @@ export const useDepartmentListStore = defineStore("departmentList", () => {
                 {role:"主管",name:"簡靖芳",title:"所長"}
             ],
             core: [
-                "農業環境：田間管理技術與生產環境分析",
-                "農業經濟：農產業供應鏈與輔導措施研究",
-                "農場淨零：農業政策研析與淨零策略評估",
+                "農業環境政策研析與制度規劃",
+                "農業環境監測與減碳循環推動",
+                "農業產業輔導與人才培育",
             ],
         },
         {
@@ -67,13 +65,10 @@ export const useDepartmentListStore = defineStore("departmentList", () => {
                 {role:"主管",name:"徐  顥",title:"所長"},
                 {role:"副主管",name:"謝宜叡",title:"副所長"},
             ],
-            manager: null,
-            managerTitle: null,
             core: [
-                "農業水資源工程政策研擬與效益研析",
-                "農田水利水路系統各項工程改善調查規劃",
-                "水文水理檢討與分析",
-                "農業水資源工程規劃設計",
+                "農田水利中長程政策規劃及推動研究",
+                "農田水利工程灌溉排水、取水設施工程可行性研究",
+                "農田水利工程事務及相關規範"
             ],
         },
         {
@@ -84,10 +79,9 @@ export const useDepartmentListStore = defineStore("departmentList", () => {
                 {role:"主管",name:"劉柏江",title:"所長"}
             ],
             core: [
-                "農田水利署法制作業",
-                "林業及自然保育署法制作業",
-                "法律研討會、座談會及法制教育訓練",
-                "支援本院法律事務、各所處計畫之法律問題",
+                "提供法制意見及協助法規修訂",
+                "協助法制業務推動",
+                "協辦法制教育訓練",
             ],
         },
         {
@@ -98,7 +92,11 @@ export const useDepartmentListStore = defineStore("departmentList", () => {
                 {role:"主管",name:"紀祥鈺",title:"所長"},
                 {role:"副主管",name:"蕭維廷",title:"副所長"},
             ],
-            core: ["生態環境調查", "生態檢核機制研究"],
+            core: [
+                "政府公共工程之生態檢核作業", 
+                "生態資源調查", 
+                "生態資源調查"
+            ],
         },
         {
             idx: 7,
@@ -108,35 +106,23 @@ export const useDepartmentListStore = defineStore("departmentList", () => {
                 {role:"主管",name:"陳昱蓉",title:"主任"}
             ],
             core: [
-                "森林碳匯研究",
-                "獎勵輔助造林政策",
-                "公司有林經營管理及輔導",
-                "國家森林遊樂區評鑑及營運精進評估",
+                "私有林經營輔導與資源整合",
+                "林產業人才培育與技術交流",
+                "林產業振興與永續發展"
             ],
         },
         {
             idx: 8,
-            name: "教育推廣處",
+            name: "公共事務處",
             title: "",
             managers:[
-                {role:"主管",name:"謝青宏",title:"副處長"}
+                {role:"主管",name:"李佳真",title:"處長"},
+                {role:"副主管",name:"謝青宏",title:"副處長"}
             ],
             core: [
-                "專業人力培訓：辦理水資源及農業各項專業教育訓練課程",
-                "政策宣導推廣：依據多元政策需求執行各項系列活動:包含政策說明會、記者會、評選表揚、典禮規劃等",
-                "知識傳播營銷：結合企劃力與科技力，應用VR（虛擬實境）技術與影像紀實，提供專業服務",
-            ],
-        },
-        {
-            idx: 9,
-            name: "國際合作處",
-            title: "",
-            managers:[],
-            manager: null,
-            managerTitle: null,
-            core: [
-                "拓展與國際研究組織之合作交流管道，並建立長期夥伴關係",
-                "辦理國際水資源及農業技術講習，引進國際先進技術與觀念",
+                "政策品牌與整合行銷",
+                "全方位活動與專業典禮執行",
+                "農田水利多元推廣"
             ],
         },
         {
